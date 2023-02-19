@@ -5,6 +5,8 @@ pragma solidity ^0.8.13;
 //@todo use file pattern for admin calls
 //@todo combine already voted and single address together
 
+//@note using merkletree for main logic
+
 import "lib/solmate/src/utils/MerkleProofLib.sol";
 import "lib/solmate/src/auth/Owned.sol";
 
