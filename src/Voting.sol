@@ -9,6 +9,7 @@ pragma solidity ^0.8.13;
 
 import "lib/solmate/src/utils/MerkleProofLib.sol";
 import "lib/solmate/src/auth/Owned.sol";
+import "forge-std/console.sol";
 
 contract Voting is Owned{
 
@@ -53,7 +54,7 @@ contract Voting is Owned{
 
 
     //Does not check  whether the candidate name is accurate
-    function vote(bytes32[] calldata proof , string memory candidate) external {
+    function vote(bytes32[] calldata proof , string calldata candidate) external {
         if(uint64(block.timestamp) < timeToStart  ){
             revert NotStart();
         }
@@ -62,7 +63,7 @@ contract Voting is Owned{
         }
 
         ++votes[candidate];
-        isVoted[msg.sender] = 2;
+        isVoted[msg.sender] = 1;
     }
 
     //using public because so users can check whether their are registered vote in the hashedroot
@@ -73,12 +74,9 @@ contract Voting is Owned{
         //Using the efficient hashing found in openzepplin merkleproof.sol
         //I think there is an issue here
         //ask in discord can this cause any issue
-        bytes32 leaf; 
-        assembly {
-            mstore(0x00,_addy)
-            leaf := keccak256(0x00, 0x20)
-        }
-        return(MerkleProofLib.verify(proof,rootHash,leaf));
+
+
+        return(MerkleProofLib.verify(proof,rootHash,keccak256(bytes.concat(keccak256(abi.encode(_addy))))));
 
     }
 
@@ -87,6 +85,7 @@ contract Voting is Owned{
        | ________________________________________________________________ | */
 
 
+//Recommened to use these function to for updating the owner but it is not enforced in the contract level
 function pushOwner(address _addy) external onlyOwner{
     cacheOwner = _addy;
 }

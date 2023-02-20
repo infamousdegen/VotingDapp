@@ -8,5 +8,6 @@ const values = [["0xb24156B92244C1541F916511E879e60710e30b84"],
 const tree = StandardMerkleTree.of(values,["address"]);
 
 console.log('Merkle Root',tree.root);
+console.log(tree.render())
 
 fs.writeFileSync("tree.json", JSON.stringify(tree.dump()));
