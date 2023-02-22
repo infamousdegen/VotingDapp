@@ -13,7 +13,7 @@ contract CounterTest is Test {
 
     function setUp() public {
         vm.prank(owner);
-        voting = new Voting(bytes32(0xa7e9577a96a6319368770efb7849268eb960562dccb373e9a8392a3fd59af139),uint64(0));
+        voting = new Voting(bytes32(0xa7e9577a96a6319368770efb7849268eb960562dccb373e9a8392a3fd59af139),uint64(block.timestamp +86400));
 
     }
 
@@ -69,11 +69,13 @@ contract CounterTest is Test {
 
     }
 
-    function test_timeStamp() public {
-        vm.startPrank(owner);
-        voting.updateTimeStamp(uint64(block.timestamp+500000));
-        vm.stopPrank();
+    function test_voteBeforeTime() public {
         vm.expectRevert();
+        test_vote();
+    }
+
+    function test_voteAfterTime() public {
+        vm.warp(block.timestamp + 86400);
         test_vote();
     }
 
